@@ -1,0 +1,29 @@
+#cloud-config
+
+hostname: node1
+
+coreos:
+  etcd:
+    addr: $private_ipv4:4001
+    peer-addr: $private_ipv4:7001
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: static.network
+      content: |
+        [Match]
+        Name=ens3
+        [Network]
+        Address=192.168.1.109/24
+        Gateway=192.168.1.1
+        DNS=8.8.8.8
+users:
+  - name: core
+    ssh-authorized-keys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDb3P/cfdJMRFvZnZIS1eI0P3m/G9bXbW997ou4lLmZHTDp9JGifRRTQTZCHvQvVMGTbNeTBKWU2r7/e8aV10tUZ4Oq9qHH6w1ic3JydV4LsSJUow4cwKqs+WvoY5jn91t5HK59rE0mnfA9dejY+hFUhTdR09xPxWyvQFfe5U3cRUsnYu3Mzn0526cCcAp+s8CpQiGYtl9P0gCQO7WcTvtt89eTtrxZrNseYYngQU/LPJu5u1GCFj8dAZeH6tu7EnXEWzpJKIKkZzfNtOROzoFmL0fqFDrkHgLe4rulJ3ae65VJY8UTrU+llwXeRo1IzXTG9+79xpKhbYDqHH6wpNg/
+
+  - groups:
+      - sudo
+      - docker
